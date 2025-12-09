@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizForge AI | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">⚡</span>
+            <span class="logo-text">QuizForge<span class="ai-badge">AI</span></span>
+        </div>
+        <div class="user-section">
+            <div class="user-info">
+                <span class="user-role" id="userRole">Role</span>
+                <span class="user-name" id="userName">User</span>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- ==================== PROFESSOR DASHBOARD ==================== -->
+        <div id="professorDashboard" class="dashboard" style="display:none;">
+            <div class="dashboard-header">
+                <h1>👨‍🏫 Professor Dashboard</h1>
+                <p>Create and manage quizzes for your students</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="create">➕ Create Quiz</button>
+                <button class="tab" data-tab="myquizzes">📚 My Quizzes</button>
+            </div>
+
+            <!-- Create Quiz Tab -->
+            <div class="tab-content active" id="createTab">
+                <div class="card">
+                    <h2>📄 Upload PDF & Generate Quiz</h2>
+                    
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📄</div>
+                        <h3>Drop PDF here or click to upload</h3>
+                        <p>Supports text-based PDFs up to 100MB</p>
+                        <input type="file" id="pdfInput" accept=".pdf" hidden>
+                    </div>
+
+                    <div class="file-info" id="fileInfo" style="display:none;">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name" id="fileName"></span>
+                        <span class="file-status" id="fileStatus">✓ Ready</span>
+                        <button class="remove-btn" id="removeFile">✕</button>
+                    </div>
+
+                    <div class="form-section" id="quizOptions" style="display:none;">
+                        <div class="form-group">
+                            <label>Quiz Title</label>
+                            <input type="text" id="quizTitle" placeholder="Enter quiz title">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Difficulty</label>
+                            <div class="difficulty-options">
+                                <label class="diff-option"><input type="radio" name="difficulty" value="easy"><span>🟢 Easy</span></label>
+                                <label class="diff-option"><input type="radio" name="difficulty" value="medium" checked><span>🟡 Medium</span></label>
+                                <label class="diff-option"><input type="radio" name="difficulty" value="hard"><span>🔴 Hard</span></label>
+                            </div>
+                        </div>
+
+                        <div class="question-types">
+                            <div class="q-type">
+                                <label><input type="checkbox" id="mcqEnabled" checked> Multiple Choice</label>
+                                <div class="counter">
+                                    <button class="counter-btn" data-target="mcqCount" data-action="dec">-</button>
+                                    <span id="mcqCount">5</span>
+                                    <button class="counter-btn" data-target="mcqCount" data-action="inc">+</button>
+                                </div>
+                            </div>
+                            <div class="q-type">
+                                <label><input type="checkbox" id="tfEnabled"> True/False</label>
+                                <div class="counter">
+                                    <button class="counter-btn" data-target="tfCount" data-action="dec">-</button>
+                                    <span id="tfCount">5</span>
+                                    <button class="counter-btn" data-target="tfCount" data-action="inc">+</button>
+                                </div>
+                            </div>
+                            <div class="q-type">
+                                <label><input type="checkbox" id="whEnabled"> WH Questions</label>
+                                <div class="counter">
+                                    <button class="counter-btn" data-target="whCount" data-action="dec">-</button>
+                                    <span id="whCount">5</span>
+                                    <button class="counter-btn" data-target="whCount" data-action="inc">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="primary-btn" id="generateBtn">🚀 Generate Quiz</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Quizzes Tab -->
+            <div class="tab-content" id="myquizzesTab">
+                <div class="quizzes-grid" id="professorQuizzes">
+                    <!-- Quizzes will be loaded here -->
+                </div>
+                <div class="empty-state" id="noQuizzes" style="display:none;">
+                    <div class="empty-icon">📚</div>
+                    <h3>No quizzes yet</h3>
+                    <p>Create your first quiz to get started</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STUDENT DASHBOARD ==================== -->
+        <div id="studentDashboard" class="dashboard" style="display:none;">
+            <div class="dashboard-header">
+                <h1>🎓 Student Dashboard</h1>
+                <p>Take quizzes and track your progress</p>
+            </div>
+
+            <div class="stats-grid" id="studentStats">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="totalQuizzes">0</div>
+                    <div class="stat-label">Quizzes Taken</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="avgScore">0%</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value" id="bestScore">0%</div>
+                    <div class="stat-label">Best Score</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="available">📋 Available Quizzes</button>
+                <button class="tab" data-tab="results">📊 My Results</button>
+            </div>
+
+            <!-- Available Quizzes Tab -->
+            <div class="tab-content active" id="availableTab">
+                <div class="quizzes-list" id="availableQuizzes">
+                    <!-- Quizzes will be loaded here -->
+                </div>
+                <div class="empty-state" id="noAvailableQuizzes" style="display:none;">
+                    <div class="empty-icon">📋</div>
+                    <h3>No quizzes available</h3>
+                    <p>Check back later for new quizzes</p>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div class="tab-content" id="resultsTab">
+                <div class="results-list" id="studentResults">
+                    <!-- Results will be loaded here -->
+                </div>
+                <div class="empty-state" id="noResults" style="display:none;">
+                    <div class="empty-icon">📊</div>
+                    <h3>No results yet</h3>
+                    <p>Take a quiz to see your results here</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== QUIZ TAKING VIEW ==================== -->
+        <div id="quizView" class="dashboard" style="display:none;">
+            <div class="quiz-header">
+                <button class="back-btn" id="backToList">← Back</button>
+                <h2 id="quizViewTitle">Quiz Title</h2>
+                <span class="quiz-difficulty" id="quizViewDifficulty">Medium</span>
+            </div>
+
+            <div class="quiz-questions" id="quizQuestions">
+                <!-- Questions will be loaded here -->
+            </div>
+
+            <button class="primary-btn submit-quiz-btn" id="submitQuizBtn">✓ Submit Quiz</button>
+        </div>
+
+        <!-- ==================== QUIZ RESULT VIEW ==================== -->
+        <div id="resultView" class="dashboard" style="display:none;">
+            <div class="result-card">
+                <div class="result-score">
+                    <div class="score-circle">
+                        <span class="score-value" id="resultScore">0%</span>
+                    </div>
+                </div>
+                <h2>Quiz Completed!</h2>
+                <p class="result-message" id="resultMessage">Great job!</p>
+                <div class="result-stats">
+                    <div><strong id="correctCount">0</strong> Correct</div>
+                    <div><strong id="totalCount">0</strong> Total</div>
+                </div>
+                <button class="primary-btn" id="backToDashboard">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- ==================== LOADING OVERLAY ==================== -->
+        <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+            <div class="spinner"></div>
+            <p id="loadingText">Generating quiz...</p>
+        </div>
+    </main>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
+

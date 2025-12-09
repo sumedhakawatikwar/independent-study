@@ -3,71 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create and Add QA</title>
+    <title>QuizForge AI | Transform PDFs into Knowledge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="noise"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
 
-    <div id="repoSetupSection">
-        <h1>Create and Load QA Repository</h1>
-        <button onclick="createRepo()">Create Repo</button>
-        <button onclick="loadRepo()">Load Repo</button>
-    </div>
-
-<div id="repoContainer" class="container" style="display:none;">
-    <div class="left-column" id="questionList">
-        <h2>Existing Questions</h2>
-    </div>
-
-    <div class="right-column">
-        <div id="addQAContainer" class="top-middle">
-            <button onclick="showAddQAForm()">Add QA</button>
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">⚡</span>
+            <span class="logo-text">QuizForge<span class="ai-badge">AI</span></span>
         </div>
+        <nav class="nav">
+            <a href="#" class="nav-link active" data-section="upload">Create Quiz</a>
+            <a href="#" class="nav-link" data-section="history">History</a>
+        </nav>
+        <div class="user-menu">
+            <div class="user-info" id="userInfo">
+                <span class="user-role" id="userRole">Student</span>
+                <span class="user-name" id="userName">User</span>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </header>
 
-        <div id="qaFormContainer" class="hidden">
-            <h2>Add Question</h2>
-            <form id="qaForm">
-                <label for="question">Question:</label>
-                <input type="text" id="question" name="question" required>
-                <br>
+    <main class="main-content">
+        <!-- Upload Section -->
+        <section id="upload-section" class="section active">
+            <div class="hero">
+                <h1 class="title">
+                    Transform <span class="gradient-text">PDFs</span> into 
+                    <span class="gradient-text">Interactive Quizzes</span>
+                </h1>
+                <p class="subtitle">Upload any document and let AI create comprehensive quizzes with summaries, WH questions, MCQ, and True/False questions.</p>
+            </div>
 
-                <label for="questionType">Question Type:</label>
-                <select id="questionType" name="questionType" onchange="toggleOptions()" required>
-                    <option value="none">None</option>
-                    <option value="mcq">MCQ</option>
-                    <option value="fill in the blank">Fill in the Blank</option>
-                    <option value="short answer">Short Answer</option>
-                    <option value="long answer">Long Answer</option>
-                </select>
-                <br><br>
-
-                <!-- MCQ Options -->
-                <div id="mcqOptions" class="hidden">
-                    <label for="mcqType">MCQ Type:</label>
-                    <select id="mcqType" name="mcqType" onchange="updateMCQOptions()">
-                        <option value="none">None</option>
-                        <option value="single correct">Single Correct</option>
-                        <option value="multiple correct">Multiple Correct</option>
-                        <option value="1/5">1/5</option>
-                        <option value="n/5">n/5</option>
-                    </select>
-                    <br><br>
-
-                    <div id="mcqFields"></div>
-
-                    <label for="mcqCorrectAnswer">Correct Answer:</label>
-                    <input type="text" id="mcqCorrectAnswer" name="mcqCorrectAnswer" placeholder="Enter correct answer">
+            <div class="upload-container">
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <h3 class="upload-title">Drop your PDF here</h3>
+                    <p class="upload-hint">or click to browse files</p>
+                    <input type="file" id="pdfInput" accept=".pdf" hidden>
                 </div>
 
-                <button type="button" onclick="submitQA()">Submit</button>
-            </form>
-        </div>
-    </div>
-</div>
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-card">
+                        <div class="file-icon">📄</div>
+                        <div class="file-details">
+                            <span class="file-name" id="fileName">document.pdf</span>
+                            <span class="file-size" id="fileSize">2.4 MB</span>
+                        </div>
+                        <button class="remove-file" id="removeFile">×</button>
+                    </div>
+                    <div class="extraction-status" id="extractionStatus">
+                        <span class="status-icon">✓</span>
+                        <span class="status-text">Text extracted successfully</span>
+                    </div>
+                </div>
 
-<script src="app.js"></script>
+                <!-- Difficulty Level Selection -->
+                <div class="options-panel difficulty-panel">
+                    <h4 class="options-title">Difficulty Level</h4>
+                    <p class="options-subtitle">Choose how challenging the questions should be</p>
+                    
+                    <div class="difficulty-options">
+                        <label class="difficulty-option">
+                            <input type="radio" name="difficulty" value="easy">
+                            <div class="difficulty-card">
+                                <span class="difficulty-icon">🟢</span>
+                                <span class="difficulty-name">Easy</span>
+                                <span class="difficulty-desc">Basic recall & simple understanding</span>
+                            </div>
+                        </label>
+                        <label class="difficulty-option">
+                            <input type="radio" name="difficulty" value="medium" checked>
+                            <div class="difficulty-card">
+                                <span class="difficulty-icon">🟡</span>
+                                <span class="difficulty-name">Medium</span>
+                                <span class="difficulty-desc">Comprehension & application</span>
+                            </div>
+                        </label>
+                        <label class="difficulty-option">
+                            <input type="radio" name="difficulty" value="hard">
+                            <div class="difficulty-card">
+                                <span class="difficulty-icon">🔴</span>
+                                <span class="difficulty-name">Hard</span>
+                                <span class="difficulty-desc">Critical thinking & analysis</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
 
+                <div class="options-panel">
+                    <h4 class="options-title">Select Question Types</h4>
+                    <p class="options-subtitle">Choose which types of questions to generate (select at least one)</p>
+                    
+                    <div class="question-type-grid">
+                        <!-- WH Questions Toggle -->
+                        <div class="question-type-card" id="whCard">
+                            <div class="type-header">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="whToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="type-info">
+                                    <span class="type-icon">❓</span>
+                                    <span class="type-name">WH Questions</span>
+                                </div>
+                            </div>
+                            <p class="type-desc">What, Why, When, Where, Who, How</p>
+                            <div class="counter" id="whCounterGroup">
+                                <button class="counter-btn" data-action="decrease" data-target="whCount">−</button>
+                                <span class="counter-value" id="whCount">5</span>
+                                <button class="counter-btn" data-action="increase" data-target="whCount">+</button>
+                            </div>
+                        </div>
 
+                        <!-- MCQ Questions Toggle -->
+                        <div class="question-type-card" id="mcqCard">
+                            <div class="type-header">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="mcqToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="type-info">
+                                    <span class="type-icon">🔘</span>
+                                    <span class="type-name">Multiple Choice</span>
+                                </div>
+                            </div>
+                            <p class="type-desc">4 options with one correct answer</p>
+                            <div class="counter" id="mcqCounterGroup">
+                                <button class="counter-btn" data-action="decrease" data-target="mcqCount">−</button>
+                                <span class="counter-value" id="mcqCount">5</span>
+                                <button class="counter-btn" data-action="increase" data-target="mcqCount">+</button>
+                            </div>
+                        </div>
 
+                        <!-- True/False Questions Toggle -->
+                        <div class="question-type-card" id="tfCard">
+                            <div class="type-header">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="tfToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="type-info">
+                                    <span class="type-icon">✓✗</span>
+                                    <span class="type-name">True / False</span>
+                                </div>
+                            </div>
+                            <p class="type-desc">Statement verification questions</p>
+                            <div class="counter disabled" id="tfCounterGroup">
+                                <button class="counter-btn" data-action="decrease" data-target="tfCount">−</button>
+                                <span class="counter-value" id="tfCount">5</span>
+                                <button class="counter-btn" data-action="increase" data-target="tfCount">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="generate-btn" id="generateBtn" disabled>
+                    <span class="btn-text">Generate Quiz</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading Section -->
+        <section id="loading-section" class="section">
+            <div class="loading-container">
+                <div class="loading-spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+                <h2 class="loading-title">Forging Your Quiz</h2>
+                <p class="loading-status" id="loadingStatus">Analyzing PDF content...</p>
+                <div class="loading-progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="section">
+            <div class="quiz-header">
+                <button class="back-btn" id="backBtn">
+                    <span>←</span> New Quiz
+                </button>
+                <div class="quiz-header-info">
+                    <h2 class="quiz-title" id="quizTitle">Your Generated Quiz</h2>
+                    <span class="quiz-difficulty" id="quizDifficulty">Medium</span>
+                </div>
+            </div>
+
+            <!-- Question Type Tabs -->
+            <div class="question-tabs" id="questionTabs">
+                <!-- Tabs will be dynamically generated -->
+            </div>
+
+            <!-- WH Questions -->
+            <div class="questions-container" id="whQuestions" style="display: none;">
+                <!-- Questions will be injected here -->
+            </div>
+
+            <!-- MCQ Questions -->
+            <div class="questions-container" id="mcqQuestions" style="display: none;">
+                <!-- Questions will be injected here -->
+            </div>
+
+            <!-- True/False Questions -->
+            <div class="questions-container" id="tfQuestions" style="display: none;">
+                <!-- Questions will be injected here -->
+            </div>
+
+            <!-- Score Section -->
+            <div class="score-section" id="scoreSection" style="display: none;">
+                <div class="score-card">
+                    <div class="score-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="score-bg" cx="50" cy="50" r="45"/>
+                            <circle class="score-fill" cx="50" cy="50" r="45" id="scoreCircle"/>
+                        </svg>
+                        <div class="score-text">
+                            <span class="score-value" id="scoreValue">0</span>
+                            <span class="score-label">%</span>
+                        </div>
+                    </div>
+                    <h3 class="score-title">Quiz Complete!</h3>
+                    <p class="score-message" id="scoreMessage">Great job!</p>
+                    <button class="retry-btn" id="retryBtn">Try Again</button>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitQuiz">
+                <span>Submit Answers</span>
+                <span class="btn-icon">✓</span>
+            </button>
+        </section>
+
+        <!-- History Section -->
+        <section id="history-section" class="section">
+            <div class="history-header">
+                <h2 class="section-title">Quiz History</h2>
+                <p class="section-subtitle">Your previously generated quizzes</p>
+            </div>
+            <div class="history-grid" id="historyGrid">
+                <!-- Quiz cards will be injected here -->
+            </div>
+            <div class="empty-state" id="emptyHistory">
+                <div class="empty-icon">📚</div>
+                <h3>No quizzes yet</h3>
+                <p>Generate your first quiz to see it here</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Powered by <span class="gradient-text">Groq AI</span> • Built with ⚡</p>
+    </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>

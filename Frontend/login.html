@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizForge AI | Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-hover: #22222e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6a6a7a;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #f7c548;
+            --accent-tertiary: #00d4aa;
+            --accent-error: #ff4757;
+            --accent-success: #2ed573;
+            --gradient-1: linear-gradient(135deg, #ff6b35 0%, #f7c548 100%);
+            --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%);
+            --gradient-student: linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%);
+            --gradient-professor: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-admin: linear-gradient(135deg, #ff6b35 0%, #f7c548 100%);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            --font-main: 'Outfit', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 1000;
+        }
+
+        .gradient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 { width: 500px; height: 500px; background: var(--accent-primary); top: -200px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: var(--accent-tertiary); bottom: -100px; left: -100px; animation-delay: -7s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.05); }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .logo-icon { font-size: 2.5rem; }
+
+        .ai-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            background: var(--gradient-1);
+            border-radius: 6px;
+            color: var(--bg-primary);
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            backdrop-filter: blur(20px);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 32px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: var(--transition-fast);
+            font-family: var(--font-main);
+        }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .role-selector {
+            margin-bottom: 28px;
+        }
+
+        .role-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .role-option {
+            cursor: pointer;
+        }
+
+        .role-option input { display: none; }
+
+        .role-card {
+            padding: 16px 12px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            text-align: center;
+            transition: var(--transition-normal);
+        }
+
+        .role-card:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .role-option input:checked + .role-card {
+            border-color: var(--accent-primary);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .role-option input:checked + .role-card.student {
+            border-color: var(--accent-tertiary);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .role-option input:checked + .role-card.professor {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .role-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: var(--font-main);
+            transition: var(--transition-fast);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            background: var(--gradient-1);
+            color: var(--bg-primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-family: var(--font-main);
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--accent-error);
+            color: var(--accent-error);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .switch-text {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .switch-link {
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .switch-link:hover {
+            text-decoration: underline;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 520px) {
+            .login-card { padding: 28px 20px; }
+            .logo-text { font-size: 2rem; }
+            .role-options { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-text">
+                <span class="logo-icon">⚡</span>
+                QuizForge<span class="ai-badge">AI</span>
+            </div>
+            <p class="tagline">Transform PDFs into Interactive Quizzes</p>
+        </div>
+
+        <div class="login-card">
+            <div class="tabs">
+                <button class="tab active" data-tab="login">Login</button>
+                <button class="tab" data-tab="register">Register</button>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Login Form -->
+            <div class="form-section active" id="loginSection">
+                <form id="loginForm">
+                    <div class="role-selector">
+                        <div class="role-label">Select your role</div>
+                        <div class="role-options">
+                            <label class="role-option">
+                                <input type="radio" name="loginRole" value="student" checked>
+                                <div class="role-card student">
+                                    <div class="role-icon">🎓</div>
+                                    <div class="role-name">Student</div>
+                                </div>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="loginRole" value="professor">
+                                <div class="role-card professor">
+                                    <div class="role-icon">👨‍🏫</div>
+                                    <div class="role-name">Professor</div>
+                                </div>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="loginRole" value="admin">
+                                <div class="role-card admin">
+                                    <div class="role-icon">⚙️</div>
+                                    <div class="role-name">Admin</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="loginBtn">Login</button>
+                </form>
+
+                <p class="switch-text">
+                    Don't have an account? <span class="switch-link" data-switch="register">Register here</span>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="form-section" id="registerSection">
+                <form id="registerForm">
+                    <div class="role-selector">
+                        <div class="role-label">Register as</div>
+                        <div class="role-options">
+                            <label class="role-option">
+                                <input type="radio" name="registerRole" value="student" checked>
+                                <div class="role-card student">
+                                    <div class="role-icon">🎓</div>
+                                    <div class="role-name">Student</div>
+                                </div>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="registerRole" value="professor">
+                                <div class="role-card professor">
+                                    <div class="role-icon">👨‍🏫</div>
+                                    <div class="role-name">Professor</div>
+                                </div>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="registerRole" value="admin">
+                                <div class="role-card admin">
+                                    <div class="role-icon">⚙️</div>
+                                    <div class="role-name">Admin</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="registerName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="registerPassword" placeholder="Create a password" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="registerBtn">Create Account</button>
+                </form>
+
+                <p class="switch-text">
+                    Already have an account? <span class="switch-link" data-switch="login">Login here</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol === 'file:' 
+            ? 'http://localhost:5000' 
+            : window.location.origin;
+        
+        // Check if already logged in
+        const token = localStorage.getItem('quizforge_token');
+        if (token) {
+            if (window.location.protocol === 'file:') {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = '/app';
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                switchTab(targetTab);
+            });
+        });
+
+        document.querySelectorAll('.switch-link').forEach(link => {
+            link.addEventListener('click', () => {
+                switchTab(link.dataset.switch);
+            });
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`${tab}Section`).classList.add('active');
+            
+            hideError();
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const role = document.querySelector('input[name="loginRole"]:checked').value;
+            const btn = document.getElementById('loginBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+                
+                // Save token and user info
+                localStorage.setItem('quizforge_token', data.token);
+                localStorage.setItem('quizforge_user', JSON.stringify(data.user));
+                
+                // Redirect to app
+                if (window.location.protocol === 'file:') {
+                    window.location.href = 'index.html';
+                } else {
+                    window.location.href = '/app';
+                }
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        });
+
+        // Register form
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.querySelector('input[name="registerRole"]:checked').value;
+            const btn = document.getElementById('registerBtn');
+            
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Registration failed');
+                }
+                
+                // Save token and user info
+                localStorage.setItem('quizforge_token', data.token);
+                localStorage.setItem('quizforge_user', JSON.stringify(data.user));
+                
+                // Redirect to app
+                if (window.location.protocol === 'file:') {
+                    window.location.href = 'index.html';
+                } else {
+                    window.location.href = '/app';
+                }
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        });
+    </script>
+</body>
+</html>
+

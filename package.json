@@ -1,8 +1,23 @@
 {
+  "name": "ai-quiz-generator",
+  "version": "1.0.0",
+  "description": "AI-powered quiz generator from PDF documents",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "node backend/server.js",
+    "start": "node backend/server.js"
+  },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.10.0"
+    "groq-sdk": "^0.5.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "pdf-poppler": "^0.2.3",
+    "tesseract.js": "^6.0.1"
   }
 }
