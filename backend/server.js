@@ -23,7 +23,7 @@ const qaSchema = new mongoose.Schema({
                     isCorrect: { type: Boolean, required: true }
                 }
             ],
-            correctAnswer: { type: String, required: true }  // Correct answer field
+            correctAnswer: { type: String, required: true }  
         }
     ]
 });
